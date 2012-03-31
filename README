@@ -11,9 +11,9 @@ To get this working (after setting up the database):
      rm -rf gtdserver
 3. Clone this project.
      git clone git@github.com:brewerja/gtdserver.git
-4. Add a link to Tastypie in the project.
+4. Add a symbolic link to Tastypie in the project.
      ln -s $TASTYPIE_LOCATION tastypie
 5. Run the development server to test.
-     ../manage.py runserver
+     python manage.py runserver
 6. Open up the following link in a web browser:
     http://127.0.0.1:8000/api/v1/attacks/?format=json

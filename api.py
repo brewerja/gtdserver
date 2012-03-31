@@ -1,5 +1,5 @@
 from tastypie import fields
-from tastypie.resources import ModelResource
+from tastypie.contrib.gis.resources import ModelResource
 from gtdserver.models import *
 
 
