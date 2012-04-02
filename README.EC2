@@ -1,0 +1,111 @@
+# Steps to get the GTD API running on Amazon EC2
+
+# The AMI used here is a 64-bit Ubuntu 11.10 micro instance.
+# AMI: ubuntu/images/ebs/ubuntu-oneiric-11.10-amd64-server-20120222 (ami-baba68d3)
+
+# Get the repository references setup.
+sudo apt-get update
+
+# Install all the necessary packages from the repository.
+sudo apt-get install postgresql postgresql-client postgresql-contrib postgis postgresql-9.1-postgis git postgresql-server-dev-all python-dev proj libgeos-dev libgdal1-dev apache2 libapache2-mod-wsgi python-dateutil python-lxml tmux exuberant-ctags unzip
+
+# Personal vim configuration setup.
+git clone git://github.com/brewerja/vim.git ~/.vim
+cd .vim
+./configure
+
+# Download packages that aren't available in the repository.
+wget -O Django-1.4.tgz http://www.djangoproject.com/download/1.4/tarball/
+wget http://mimeparse.googlecode.com/files/mimeparse-0.1.3.tar.gz;
+wget http://www.psycopg.org/psycopg/tarballs/PSYCOPG-2-4/psycopg2-2.4.5.tar.gz;
+wget -O toastdrive-django-tastypie.zip https://github.com/toastdriven/django-tastypie/zipball/master
+
+# Install Django, mimeparse, psycopg2
+cd Django-1.4
+python setup.py install
+cd ../psycopg2-2.4.5
+python setup.py install
+cd ../toastdrive-django-tastypie-{VERSION}
+python setup.py install
+
+# Create a new Djano project in which to put our application.
+django-admin.py startproject gtdserver
+
+# Remove the empty application that was automatically created and replace from GitHub.
+cd gtdserver
+rm -rf gtdserver
+git clone git://github.com/brewerja/gtdserver.git
+
+# Set project for production mode.
+vi ~/gtdserver/gtdserver/settings.py
+Set the following:
+  DEBUG=False
+  TEMPLATE_DEBUG=False
+  username (ubuntu)
+  password (see PostgreSQL setup below)
+  host (localhost)
+
+# Hook up the link to Tastypie
+ln -s ~/toastdriven-django-tastypie-{VERSION}/tastypie .
+
+# Set the password for the postgres database role.
+sudo -u postgres psql
+\password postgres
+
+# Create a new user and set the password.
+sudo -u postgres createuser --superuser ubuntu
+sudo -u postgres psql
+\password ubuntu
+
+# Create template_postgis to make creation of PostGIS enabled databases easy.
+sudo -u postgres psql
+
+  -- Create temlate_postgis database
+  CREATE DATABASE template_postgis WITH TEMPLATE = template1 ENCODING = 'UTF8';
+  \c template_postgis; -- Connect to the database
+  CREATE LANGUAGE plpgsql; -- Probably already exists
+  \i /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
+  \i /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
+  \i /usr/share/postgresql/9.1/contrib/postgis_comments.sql
+  -- Mark the template_postgis database as a template
+  UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template_postgis';
+  GRANT ALL ON geometry_columns TO PUBLIC;
+  GRANT ALL ON spatial_ref_sys TO PUBLIC;
+
+# Download the data from GitHub and ingest into PostgreSQL.
+wget https://github.com/downloads/brewerja/GTD_Import/setup_package.tgz
+tar xzvf setup_package
+cd setup_package
+
+# Optional: Replace all occurrences of 'jbrewer' with 'ubuntu' to avoid error
+# messages.
+vi gtd_database.sql
+  :%s/jbrewer/ubuntu/g
+  :wq
+./setup
+
+# Configure Apache to serve the Django application.
+Add the following to /etc/apache2/httpd.conf:
+
+  WSGIScriptAlias / /home/ubuntu/gtdserver/gtdserver/wsgi.py
+  WSGIPythonPath /home/ubuntu/gtdserver
+  
+  <Directory /home/ubuntu/gtdserver/gtdserver>
+  <Files wsgi.py>
+  Order deny,allow
+  Allow from all
+  </Files>
+  </Directory>
+
+# Restart Apache to initialize.
+sudo /etc/init.d/apache2 restart
+
+# Using the AWS Management Console, get an elastic IP for the instance and test
+# the API in a browser:
+http://{ELASTIC-IP}/api/v1/attacks/?format=json # Should return back a JSON response.
+http://{ELASTIC-IP}/api/v1/attacks/?format=xml # Should return back an XML response.
+
+# In the AWS Management Console, right-click the running instance and select
+# Create Image (EBS AMI) to create a custom AMI for backup purposes. Otherwise,
+# don't terminate because all will be lost. Stopping is ok as the image is
+# stored in EBS.
