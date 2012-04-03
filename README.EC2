@@ -84,6 +84,10 @@ vi gtd_database.sql
   :wq
 ./setup
 
+# Sync the database with the ORM.
+cd gtdserver
+python manage.py syncdb
+
 # Configure Apache to serve the Django application.
 Add the following to /etc/apache2/httpd.conf:
 
