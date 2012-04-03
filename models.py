@@ -43,6 +43,12 @@ from django.contrib.gis.geos import *
 #    class Meta:
 #        db_table = u'geography_columns'
 
+class DBSources(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=40, blank=True)
+
+    class Meta:
+        db_table = u'dbsources'
 
 class Countries(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -264,7 +270,7 @@ class Gtd(models.Model):
     scite1 = models.CharField(max_length=500, blank=True)
     scite2 = models.CharField(max_length=500, blank=True)
     scite3 = models.CharField(max_length=500, blank=True)
-    dbsource = models.CharField(max_length=100, blank=True)
+    dbsource = models.ForeignKey(DBSources, db_column='dbsource')
     geom = models.PointField(srid=2163, null=True, blank=True)
     geog = models.PointField(blank=True, null=True, geography=True)
     objects = models.GeoManager()

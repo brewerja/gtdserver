@@ -18,9 +18,9 @@ v1.register(WeaponTypeResource())
 v1.register(WeaponSubtypeResource())
 v1.register(PropExtentResource())
 v1.register(HostageOutcomeResource())
+v1.register(DBSourceResource())
 
 urlpatterns = patterns('',
-                       (r'^hello/$', hello),
                        (r'^api/', include(v1.urls)),
     # Examples:
     # url(r'^$', 'gtdserver.views.home', name='home'),
