@@ -1,6 +1,7 @@
 from tastypie import fields
 from tastypie.contrib.gis.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.cache import SimpleCache
 from gtdserver.models import *
 
 
@@ -208,4 +209,5 @@ class GtdResource(ModelResource):
         allowed_methods = ['get']
         queryset = Gtd.objects.all()
         resource_name = 'attacks'
+        cache = SimpleCache()
 

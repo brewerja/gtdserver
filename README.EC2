@@ -113,3 +113,21 @@ http://{ELASTIC-IP}/api/v1/attacks/?format=xml # Should return back an XML respo
 # Create Image (EBS AMI) to create a custom AMI for backup purposes. Otherwise,
 # don't terminate because all will be lost. Stopping is ok as the image is
 # stored in EBS.
+
+# Optimizations
+
+# Install Varnish HTTP Accelerator
+sudo apt-get install varnish
+#
+# Make edits to the files below as described here:
+#   https://www.varnish-software.com/static/book/Getting_started.html
+sudo vi /etc/apache2/ports.conf
+sudo vi /etc/apache2/sites-enabled/000-default
+sudo vi /etc/default/varnish
+# If it's working, you should see a Via: 1.1 varnish in the header when doing a curl -I.
+
+# Make Varnish cache a long time since all this data is static:
+#   https://www.varnish-cache.org/trac/wiki/VCLExampleLongerCaching
+
+# Add application/json and application/xml to defalte.conf to enable compression.
+#   Test with 'wget -O response.gz --header="Accept-Encoding: gzip" $URL'
