@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, include, url
-from gtdserver.views import hello
 from gtdserver.api import *
 from tastypie.api import Api
 
