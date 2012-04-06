@@ -296,10 +296,14 @@ class GtdResource(ModelResource):
         """Reference all foreign keys' names."""
         data = bundle.data
         obj = bundle.obj
-        data['geog'] = [obj.geog.x, obj.geog.y]
-        data['geom'] = [obj.geom.x, obj.geom.y]
-        data['region'] = obj.region.name
-        data['country'] = obj.country.name
+        if obj.geog:
+            data['geog'] = [obj.geog.x, obj.geog.y]
+        if obj.geom:
+            data['geom'] = [obj.geom.x, obj.geom.y]
+        if obj.region:
+            data['region'] = obj.region.name
+        if obj.country:
+            data['country'] = obj.country.name
         if obj.alternative:
             data['alternative'] = obj.alternative.name
         if obj.attacktype1:
