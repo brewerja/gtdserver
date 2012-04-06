@@ -43,9 +43,10 @@ from django.contrib.gis.geos import *
 #    class Meta:
 #        db_table = u'geography_columns'
 
-class DBSources(models.Model):
+class Dbsources(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=40, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'dbsources'
@@ -53,6 +54,10 @@ class DBSources(models.Model):
 class Countries(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=35, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
+    num_attacks_natlty1 = models.IntegerField(null=True, blank=True)
+    num_attacks_natlty2 = models.IntegerField(null=True, blank=True)
+    num_attacks_natlty3 = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'countries'
@@ -61,6 +66,7 @@ class Countries(models.Model):
 class Alternatives(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=35, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'alternatives'
@@ -69,6 +75,7 @@ class Alternatives(models.Model):
 class HostageOutcomes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'hostage_outcomes'
@@ -77,6 +84,7 @@ class HostageOutcomes(models.Model):
 class Damage(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'damage'
@@ -85,6 +93,9 @@ class Damage(models.Model):
 class TargetTypes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=35, blank=True)
+    num_attacks_targtype1 = models.IntegerField(null=True, blank=True)
+    num_attacks_targtype2 = models.IntegerField(null=True, blank=True)
+    num_attacks_targtype3 = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'target_types'
@@ -93,6 +104,10 @@ class TargetTypes(models.Model):
 class WeaponSubtypes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=True)
+    num_attacks_weapsubtype1 = models.IntegerField(null=True, blank=True)
+    num_attacks_weapsubtype2 = models.IntegerField(null=True, blank=True)
+    num_attacks_weapsubtype3 = models.IntegerField(null=True, blank=True)
+    num_attacks_weapsubtype4 = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'weapon_subtypes'
@@ -101,6 +116,7 @@ class WeaponSubtypes(models.Model):
 class Regions(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=45, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'regions'
@@ -109,6 +125,10 @@ class Regions(models.Model):
 class WeaponTypes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=True)
+    num_attacks_weaptype1 = models.IntegerField(null=True, blank=True)
+    num_attacks_weaptype2 = models.IntegerField(null=True, blank=True)
+    num_attacks_weaptype3 = models.IntegerField(null=True, blank=True)
+    num_attacks_weaptype4 = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'weapon_types'
@@ -117,6 +137,9 @@ class WeaponTypes(models.Model):
 class AttackTypes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=35, blank=True)
+    num_attacks_attacktype1 = models.IntegerField(null=True, blank=True)
+    num_attacks_attacktype2 = models.IntegerField(null=True, blank=True)
+    num_attacks_attacktype3 = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'attack_types'
@@ -125,6 +148,9 @@ class AttackTypes(models.Model):
 class ClaimModes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=35, blank=True)
+    num_attacks_claimmode = models.IntegerField(null=True, blank=True)
+    num_attacks_claimmode2 = models.IntegerField(null=True, blank=True)
+    num_attacks_claimmode3 = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = u'claim_modes'
@@ -270,7 +296,7 @@ class Gtd(models.Model):
     scite1 = models.CharField(max_length=500, blank=True)
     scite2 = models.CharField(max_length=500, blank=True)
     scite3 = models.CharField(max_length=500, blank=True)
-    dbsource = models.ForeignKey(DBSources, db_column='dbsource')
+    dbsource = models.ForeignKey(Dbsources, db_column='dbsource')
     geom = models.PointField(srid=2163, null=True, blank=True)
     geog = models.PointField(blank=True, null=True, geography=True)
     objects = models.GeoManager()

@@ -18,7 +18,7 @@ v1.register(WeaponTypeResource())
 v1.register(WeaponSubtypeResource())
 v1.register(PropExtentResource())
 v1.register(HostageOutcomeResource())
-v1.register(DBSourceResource())
+v1.register(DbsourceResource())
 
 urlpatterns = patterns('',
                        (r'^api/', include(v1.urls)),

@@ -6,15 +6,27 @@ from gtdserver.models import *
 import tastypie.resources
 
 
-class DBSourceResource(ModelResource):
+class DbsourceResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('dbsources/')
+        b.data['filter'] = x[0] + 'attacks/?dbsource=' + str(b.obj.id)
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
-        queryset = DBSources.objects.all()
+        queryset = Dbsources.objects.all()
         resource_name = 'dbsources'
 
 
 class RegionResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('regions/')
+        b.data['filter'] = x[0] + 'attacks/?region=' + str(b.obj.id)
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
@@ -23,6 +35,12 @@ class RegionResource(ModelResource):
 
 
 class CountryResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('countries/')
+        b.data['filter'] = x[0] + 'attacks/?country=' + str(b.obj.id)
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
@@ -31,6 +49,12 @@ class CountryResource(ModelResource):
 
 
 class AlternativeResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('alternatives/')
+        b.data['filter'] = x[0] + 'attacks/?alternative=' + str(b.obj.id)
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
@@ -39,14 +63,36 @@ class AlternativeResource(ModelResource):
 
 
 class AttackTypeResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('attacktypes/')
+        b.data['filter_attacktype1'] = (x[0] + 'attacks/?attacktype1=' +
+                                        str(b.obj.id))
+        b.data['filter_attacktype2'] = (x[0] + 'attacks/?attacktype2=' +
+                                        str(b.obj.id))
+        b.data['filter_attacktype3'] = (x[0] + 'attacks/?attacktype3=' +
+                                        str(b.obj.id))
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
         queryset = AttackTypes.objects.all()
-        resource_name = 'attack_types'
+        resource_name = 'attacktypes'
 
 
 class TargetTypeResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('targettypes/')
+        b.data['filter_targtype1'] = (x[0] + 'attacks/?targtype1=' +
+                                      str(b.obj.id))
+        b.data['filter_targtype2'] = (x[0] + 'attacks/?targtype2=' +
+                                      str(b.obj.id))
+        b.data['filter_targtype3'] = (x[0] + 'attacks/?targtype3=' +
+                                      str(b.obj.id))
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
@@ -63,6 +109,17 @@ class ClaimModeResource(ModelResource):
 
 
 class WeaponTypeResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('weapontypes/')
+        b.data['filter_weaptype1'] = (x[0] + 'attacks/?weaptype1=' +
+                                      str(b.obj.id))
+        b.data['filter_weaptype2'] = (x[0] + 'attacks/?weaptype2=' +
+                                      str(b.obj.id))
+        b.data['filter_weaptype3'] = (x[0] + 'attacks/?weaptype3=' +
+                                      str(b.obj.id))
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
@@ -71,6 +128,17 @@ class WeaponTypeResource(ModelResource):
 
 
 class WeaponSubtypeResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('weaponsubtypes/')
+        b.data['filter_weapsubtype1'] = (x[0] + 'attacks/?weapsubtype1=' +
+                                         str(b.obj.id))
+        b.data['filter_weapsubtype2'] = (x[0] + 'attacks/?weapsubtype2=' +
+                                         str(b.obj.id))
+        b.data['filter_weapsubtype3'] = (x[0] + 'attacks/?weapsubtype3=' +
+                                         str(b.obj.id))
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
@@ -79,6 +147,12 @@ class WeaponSubtypeResource(ModelResource):
 
 
 class PropExtentResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('propextents/')
+        b.data['filter'] = x[0] + 'attacks/?propextent=' + str(b.obj.id)
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
@@ -87,6 +161,12 @@ class PropExtentResource(ModelResource):
 
 
 class HostageOutcomeResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('hostageoutcomes/')
+        b.data['filter'] = x[0] + 'attacks/?hostkidoutcome=' + str(b.obj.id)
+        return bundle
+
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
@@ -126,7 +206,7 @@ class GtdResource(ModelResource):
     propextent = fields.ForeignKey(PropExtentResource, 'propextent', null=True)
     hostkidoutcome = fields.ForeignKey(HostageOutcomeResource,
                                        'hostkidoutcome', blank=True, null=True)
-    dbsource = fields.ForeignKey(DBSourceResource, 'dbsource', blank=True,
+    dbsource = fields.ForeignKey(DbsourceResource, 'dbsource', blank=True,
                                  null=True)
 
     class Meta:
@@ -174,14 +254,14 @@ class GtdResource(ModelResource):
             'claimmode3': ALL_WITH_RELATIONS,
             'claimconf3': ALL,
             'compclaim': ALL,
-            'weapontype1': ALL_WITH_RELATIONS,
-            'weaponsubtype1': ALL_WITH_RELATIONS,
-            'weapontype2': ALL_WITH_RELATIONS,
-            'weaponsubtype2': ALL_WITH_RELATIONS,
-            'weapontype3': ALL_WITH_RELATIONS,
-            'weaponsubtype3': ALL_WITH_RELATIONS,
-            'weapontype4': ALL_WITH_RELATIONS,
-            'weaponsubtype4': ALL_WITH_RELATIONS,
+            'weaptype1': ALL_WITH_RELATIONS,
+            'weapsubtype1': ALL_WITH_RELATIONS,
+            'weaptype2': ALL_WITH_RELATIONS,
+            'weapsubtype2': ALL_WITH_RELATIONS,
+            'weaptype3': ALL_WITH_RELATIONS,
+            'weapsubtype3': ALL_WITH_RELATIONS,
+            'weaptype4': ALL_WITH_RELATIONS,
+            'weapsubtype4': ALL_WITH_RELATIONS,
             'nkill': ALL,
             'nkillus': ALL,
             'nkillter': ALL,
