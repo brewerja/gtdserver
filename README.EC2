@@ -129,5 +129,5 @@ sudo vi /etc/default/varnish
 # Make Varnish cache a long time since all this data is static:
 #   https://www.varnish-cache.org/trac/wiki/VCLExampleLongerCaching
 
-# Add application/json and application/xml to defalte.conf to enable compression.
+# Add application/json and application/xml to deflate.conf to enable compression.
 #   Test with 'wget -O response.gz --header="Accept-Encoding: gzip" $URL'

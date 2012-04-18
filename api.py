@@ -3,7 +3,6 @@ from tastypie.contrib.gis.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
 from gtdserver.models import *
-import tastypie.resources
 
 
 class DbsourceResource(ModelResource):
@@ -188,6 +187,9 @@ class GtdResource(ModelResource):
     targtype1 = fields.ForeignKey(TargetTypeResource, 'targtype1', null=True)
     targtype2 = fields.ForeignKey(TargetTypeResource, 'targtype2', null=True)
     targtype3 = fields.ForeignKey(TargetTypeResource, 'targtype3', null=True)
+    natlty1 = fields.ForeignKey(CountryResource, 'natlty1', null=True)
+    natlty2 = fields.ForeignKey(CountryResource, 'natlty2', null=True)
+    natlty3 = fields.ForeignKey(CountryResource, 'natlty3', null=True)
     claimmode = fields.ForeignKey(ClaimModeResource, 'claimmode', null=True)
     claimmode2 = fields.ForeignKey(ClaimModeResource, 'claimmode2', null=True)
     claimmode3 = fields.ForeignKey(ClaimModeResource, 'claimmode3', null=True)
@@ -234,11 +236,11 @@ class GtdResource(ModelResource):
             'attacktype2': ALL_WITH_RELATIONS,
             'attacktype3': ALL_WITH_RELATIONS,
             'targtype1': ALL_WITH_RELATIONS,
-            'natlty1': ALL,
+            'natlty1': ALL_WITH_RELATIONS,
             'targtype2': ALL_WITH_RELATIONS,
-            'natlty2': ALL,
+            'natlty2': ALL_WITH_RELATIONS,
             'targtype3': ALL_WITH_RELATIONS,
-            'natlty3': ALL,
+            'natlty3': ALL_WITH_RELATIONS,
             'guncertain1': ALL,
             'guncertain2': ALL,
             'guncertain3': ALL,
@@ -312,6 +314,12 @@ class GtdResource(ModelResource):
             data['attacktype2'] = obj.attacktype1.name
         if obj.attacktype3:
             data['attacktype3'] = obj.attacktype1.name
+        if obj.natlty1:
+            data['natlty1'] = obj.country.name
+        if obj.natlty2:
+            data['natlty1'] = obj.country.name
+        if obj.natlty3:
+            data['natlty1'] = obj.country.name
         if obj.targtype1:
             data['targtype1'] = obj.targtype1.name
         if obj.targtype2:
