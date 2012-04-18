@@ -315,11 +315,11 @@ class GtdResource(ModelResource):
         if obj.attacktype3:
             data['attacktype3'] = obj.attacktype1.name
         if obj.natlty1:
-            data['natlty1'] = obj.country.name
+            data['natlty1'] = obj.natlty1.name
         if obj.natlty2:
-            data['natlty1'] = obj.country.name
+            data['natlty2'] = obj.natlty2.name
         if obj.natlty3:
-            data['natlty1'] = obj.country.name
+            data['natlty3'] = obj.natlty3.name
         if obj.targtype1:
             data['targtype1'] = obj.targtype1.name
         if obj.targtype2:
