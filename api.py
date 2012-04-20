@@ -14,6 +14,7 @@ class DbsourceResource(ModelResource):
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks']
         allowed_methods = ['get']
         queryset = Dbsources.objects.all()
         resource_name = 'dbsources'
@@ -28,6 +29,7 @@ class RegionResource(ModelResource):
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks']
         allowed_methods = ['get']
         queryset = Regions.objects.all()
         resource_name = 'regions'
@@ -42,6 +44,8 @@ class CountryResource(ModelResource):
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks', 'num_attacks_natlty1',
+                    'num_attacks_natlty2', 'num_attacks_natlty3']
         allowed_methods = ['get']
         queryset = Countries.objects.all()
         resource_name = 'countries'
@@ -56,6 +60,7 @@ class AlternativeResource(ModelResource):
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks']
         allowed_methods = ['get']
         queryset = Alternatives.objects.all()
         resource_name = 'alternatives'
@@ -76,6 +81,8 @@ class AttackTypeResource(ModelResource):
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
         allowed_methods = ['get']
+        ordering = ['id', 'name', 'num_attacks', 'num_attacks_attacktype1',
+                    'num_attacks_attacktype2', 'num_attacks_attacktype3']
         queryset = AttackTypes.objects.all()
         resource_name = 'attacktypes'
 
@@ -94,6 +101,8 @@ class TargetTypeResource(ModelResource):
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks', 'num_attacks_targtype1',
+                    'num_attacks_targtype2', 'num_attacks_targtype3']
         allowed_methods = ['get']
         queryset = TargetTypes.objects.all()
         resource_name = 'targettypes'
@@ -102,6 +111,8 @@ class TargetTypeResource(ModelResource):
 class ClaimModeResource(ModelResource):
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks', 'num_attacks_claimmode',
+                    'num_attacks_claimmode2', 'num_attacks_claimmode3']
         allowed_methods = ['get']
         queryset = ClaimModes.objects.all()
         resource_name = 'claimmodes'
@@ -121,6 +132,8 @@ class WeaponTypeResource(ModelResource):
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks', 'num_attacks_weaptype1',
+                    'num_attacks_weaptype2', 'num_attacks_weaptype3']
         allowed_methods = ['get']
         queryset = WeaponTypes.objects.all()
         resource_name = 'weapontypes'
@@ -136,10 +149,15 @@ class WeaponSubtypeResource(ModelResource):
                                          str(b.obj.id))
         b.data['filter_weapsubtype3'] = (x[0] + 'attacks/?weapsubtype3=' +
                                          str(b.obj.id))
+        b.data['filter_weapsubtype4'] = (x[0] + 'attacks/?weapsubtype4=' +
+                                         str(b.obj.id))
         return bundle
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks', 'num_attacks_weapsubtype1',
+                    'num_attacks_weapsubtype2', 'num_attacks_weapsubtype3',
+                    'num_attacks_weapsubtype4']
         allowed_methods = ['get']
         queryset = WeaponSubtypes.objects.all()
         resource_name = 'weaponsubtypes'
@@ -154,6 +172,7 @@ class PropExtentResource(ModelResource):
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks']
         allowed_methods = ['get']
         queryset = Damage.objects.all()
         resource_name = 'propextents'
@@ -168,6 +187,7 @@ class HostageOutcomeResource(ModelResource):
 
     class Meta:
         filtering = {'id': ALL, 'name': ALL}
+        ordering = ['id', 'name', 'num_attacks']
         allowed_methods = ['get']
         queryset = HostageOutcomes.objects.all()
         resource_name = 'hostageoutcomes'
@@ -289,6 +309,7 @@ class GtdResource(ModelResource):
             'nreleased': ALL,
             'dbsource': ALL_WITH_RELATIONS
         }
+        ordering = ['id', 'date']
         allowed_methods = ['get']
         queryset = Gtd.objects.all()
         resource_name = 'attacks'
