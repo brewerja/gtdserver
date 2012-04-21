@@ -93,6 +93,7 @@ class Damage(models.Model):
 class TargetTypes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=35, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
     num_attacks_targtype1 = models.IntegerField(null=True, blank=True)
     num_attacks_targtype2 = models.IntegerField(null=True, blank=True)
     num_attacks_targtype3 = models.IntegerField(null=True, blank=True)
@@ -104,6 +105,7 @@ class TargetTypes(models.Model):
 class WeaponSubtypes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
     num_attacks_weapsubtype1 = models.IntegerField(null=True, blank=True)
     num_attacks_weapsubtype2 = models.IntegerField(null=True, blank=True)
     num_attacks_weapsubtype3 = models.IntegerField(null=True, blank=True)
@@ -125,6 +127,7 @@ class Regions(models.Model):
 class WeaponTypes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
     num_attacks_weaptype1 = models.IntegerField(null=True, blank=True)
     num_attacks_weaptype2 = models.IntegerField(null=True, blank=True)
     num_attacks_weaptype3 = models.IntegerField(null=True, blank=True)
@@ -137,6 +140,7 @@ class WeaponTypes(models.Model):
 class AttackTypes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=35, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
     num_attacks_attacktype1 = models.IntegerField(null=True, blank=True)
     num_attacks_attacktype2 = models.IntegerField(null=True, blank=True)
     num_attacks_attacktype3 = models.IntegerField(null=True, blank=True)
@@ -148,6 +152,7 @@ class AttackTypes(models.Model):
 class ClaimModes(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=35, blank=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
     num_attacks_claimmode = models.IntegerField(null=True, blank=True)
     num_attacks_claimmode2 = models.IntegerField(null=True, blank=True)
     num_attacks_claimmode3 = models.IntegerField(null=True, blank=True)
