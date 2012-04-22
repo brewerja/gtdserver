@@ -3,6 +3,10 @@ from tastypie.contrib.gis.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
 from gtdserver.models import *
+from django.db.models import Q
+import operator
+
+column_names = Gtd._meta.get_all_field_names()
 
 
 class DbsourceResource(ModelResource):
@@ -192,6 +196,84 @@ class HostageOutcomeResource(ModelResource):
         queryset = HostageOutcomes.objects.all()
         resource_name = 'hostageoutcomes'
 
+attack_filtering_options = {
+    'id': ALL,
+    'date': ALL,
+    'extended': ALL,
+    'resolution': ALL,
+    'region': ALL_WITH_RELATIONS,
+    'country': ALL_WITH_RELATIONS,
+    'provstate': ALL,
+    'city': ALL,
+    'vicinity': ALL,
+    'location': ALL,
+    'crit1': ALL,
+    'crit2': ALL,
+    'crit3': ALL,
+    'doubtterr': ALL,
+    'alternative': ALL_WITH_RELATIONS,
+    'multiple': ALL,
+    'conflict': ALL,
+    'success': ALL,
+    'suicide': ALL,
+    'attacktype1': ALL_WITH_RELATIONS,
+    'attacktype2': ALL_WITH_RELATIONS,
+    'attacktype3': ALL_WITH_RELATIONS,
+    'targtype1': ALL_WITH_RELATIONS,
+    'natlty1': ALL_WITH_RELATIONS,
+    'targtype2': ALL_WITH_RELATIONS,
+    'natlty2': ALL_WITH_RELATIONS,
+    'targtype3': ALL_WITH_RELATIONS,
+    'natlty3': ALL_WITH_RELATIONS,
+    'guncertain1': ALL,
+    'guncertain2': ALL,
+    'guncertain3': ALL,
+    'nperps': ALL,
+    'nperpcap': ALL,
+    'claimed': ALL,
+    'claimmode': ALL_WITH_RELATIONS,
+    'claimconf': ALL,
+    'claim2': ALL,
+    'claimmode2': ALL_WITH_RELATIONS,
+    'claimconf2': ALL,
+    'claim3': ALL,
+    'claimmode3': ALL_WITH_RELATIONS,
+    'claimconf3': ALL,
+    'compclaim': ALL,
+    'weaptype1': ALL_WITH_RELATIONS,
+    'weapsubtype1': ALL_WITH_RELATIONS,
+    'weaptype2': ALL_WITH_RELATIONS,
+    'weapsubtype2': ALL_WITH_RELATIONS,
+    'weaptype3': ALL_WITH_RELATIONS,
+    'weapsubtype3': ALL_WITH_RELATIONS,
+    'weaptype4': ALL_WITH_RELATIONS,
+    'weapsubtype4': ALL_WITH_RELATIONS,
+    'nkill': ALL,
+    'nkillus': ALL,
+    'nkillter': ALL,
+    'nwound': ALL,
+    'nwoundus': ALL,
+    'nwoundter': ALL,
+    'property': ALL,
+    'propextent': ALL,
+    'propvalue': ALL,
+    'propextent': ALL_WITH_RELATIONS,
+    'ishostkid': ALL,
+    'nhostkid': ALL,
+    'nhostkidus': ALL,
+    'nhours': ALL,
+    'ndays': ALL,
+    'kidhijcountry': ALL,
+    'ransom': ALL,
+    'ransomamt': ALL,
+    'ransomamtus': ALL,
+    'ransompaid': ALL,
+    'ransompaidus': ALL,
+    'hostkidoutcome': ALL_WITH_RELATIONS,
+    'nreleased': ALL,
+    'dbsource': ALL_WITH_RELATIONS
+}
+
 
 class GtdResource(ModelResource):
     region = fields.ForeignKey(RegionResource, 'region')
@@ -232,88 +314,38 @@ class GtdResource(ModelResource):
                                  null=True)
 
     class Meta:
-        filtering = {
-            'id': ALL,
-            'date': ALL,
-            'extended': ALL,
-            'resolution': ALL,
-            'region': ALL_WITH_RELATIONS,
-            'country': ALL_WITH_RELATIONS,
-            'provstate': ALL,
-            'city': ALL,
-            'vicinity': ALL,
-            'location': ALL,
-            'crit1': ALL,
-            'crit2': ALL,
-            'crit3': ALL,
-            'doubtterr': ALL,
-            'alternative': ALL_WITH_RELATIONS,
-            'multiple': ALL,
-            'conflict': ALL,
-            'success': ALL,
-            'suicide': ALL,
-            'attacktype1': ALL_WITH_RELATIONS,
-            'attacktype2': ALL_WITH_RELATIONS,
-            'attacktype3': ALL_WITH_RELATIONS,
-            'targtype1': ALL_WITH_RELATIONS,
-            'natlty1': ALL_WITH_RELATIONS,
-            'targtype2': ALL_WITH_RELATIONS,
-            'natlty2': ALL_WITH_RELATIONS,
-            'targtype3': ALL_WITH_RELATIONS,
-            'natlty3': ALL_WITH_RELATIONS,
-            'guncertain1': ALL,
-            'guncertain2': ALL,
-            'guncertain3': ALL,
-            'nperps': ALL,
-            'nperpcap': ALL,
-            'claimed': ALL,
-            'claimmode': ALL_WITH_RELATIONS,
-            'claimconf': ALL,
-            'claim2': ALL,
-            'claimmode2': ALL_WITH_RELATIONS,
-            'claimconf2': ALL,
-            'claim3': ALL,
-            'claimmode3': ALL_WITH_RELATIONS,
-            'claimconf3': ALL,
-            'compclaim': ALL,
-            'weaptype1': ALL_WITH_RELATIONS,
-            'weapsubtype1': ALL_WITH_RELATIONS,
-            'weaptype2': ALL_WITH_RELATIONS,
-            'weapsubtype2': ALL_WITH_RELATIONS,
-            'weaptype3': ALL_WITH_RELATIONS,
-            'weapsubtype3': ALL_WITH_RELATIONS,
-            'weaptype4': ALL_WITH_RELATIONS,
-            'weapsubtype4': ALL_WITH_RELATIONS,
-            'nkill': ALL,
-            'nkillus': ALL,
-            'nkillter': ALL,
-            'nwound': ALL,
-            'nwoundus': ALL,
-            'nwoundter': ALL,
-            'property': ALL,
-            'propextent': ALL,
-            'propvalue': ALL,
-            'propextent': ALL_WITH_RELATIONS,
-            'ishostkid': ALL,
-            'nhostkid': ALL,
-            'nhostkidus': ALL,
-            'nhours': ALL,
-            'ndays': ALL,
-            'kidhijcountry': ALL,
-            'ransom': ALL,
-            'ransomamt': ALL,
-            'ransomamtus': ALL,
-            'ransompaid': ALL,
-            'ransompaidus': ALL,
-            'hostkidoutcome': ALL_WITH_RELATIONS,
-            'nreleased': ALL,
-            'dbsource': ALL_WITH_RELATIONS
-        }
+        filtering = attack_filtering_options
         ordering = ['id', 'date']
         allowed_methods = ['get']
         queryset = Gtd.objects.all()
         resource_name = 'attacks'
         cache = SimpleCache()
+
+    def apply_filters(self, request, applicable_filters):
+        """Any filters used twice will be combinded with OR."""
+        or_objects = []
+        r = request.GET
+        for k in r.keys():
+            # Must be a column keyword (not 'format', 'order_by', etc.)
+            if k in column_names:
+                # If it's used more than once, we want to combine using OR
+                if len(r.getlist(k)) > 1:
+                    # Remove it from the original (all AND) filter set
+                    for key in applicable_filters.keys():
+                        # Need the startswith b/c keys are country__exact, etc.
+                        if key.startswith(k):
+                            del(applicable_filters[key])
+                    # Create a Q object and put it in the OR list for each val
+                    for v in r.getlist(k):
+                        or_objects.append(Q(**{k: str(v)}))
+
+        if or_objects:
+            return self.get_object_list(request).filter(reduce(operator.or_,
+                                                           or_objects),
+                                                        **applicable_filters)
+        else:
+            # Just return what it normally would (ANDs on all filters).
+            return self.get_object_list(request).filter(**applicable_filters)
 
     def dehydrate(self, bundle):
         """Reference all foreign keys' names."""
