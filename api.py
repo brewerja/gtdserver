@@ -5,6 +5,8 @@ from tastypie.cache import SimpleCache
 from gtdserver.models import *
 from django.db.models import Q
 import operator
+import copy
+import re
 
 column_names = Gtd._meta.get_all_field_names()
 
@@ -320,31 +322,83 @@ class GtdResource(ModelResource):
         queryset = Gtd.objects.all()
         resource_name = 'attacks'
         cache = SimpleCache()
-
+    
     def apply_filters(self, request, applicable_filters):
-        """Any filters used twice will be combinded with OR."""
-        or_objects = []
+        """Any filters used twice will be combined with OR."""
         r = request.GET
-        for k in r.keys():
-            # Must be a column keyword (not 'format', 'order_by', etc.)
-            if k in column_names:
-                # If it's used more than once, we want to combine using OR
-                if len(r.getlist(k)) > 1:
+        print r
+
+        # Example: a1=x, a2=x, a3=x, a1=y, a2=y, a3=y, b1=z, b2=z, b3=z
+        # We want (a1=x or a2=x or a3=x or a1=y or a2=y or a3=y) and 
+        #         (b1=z or b2=z or b3=z)
+
+        # r.keys = [format, b1, b2, b3, a1, a2, a3]
+
+        orprefixes = []
+        dict = {}
+        print r.keys()
+        for colname in r.keys():
+            # Make sure it's a column name, not something like 'format'
+            if colname in column_names:
+                print colname, r.getlist(colname)
+                # Match everything until the numbers...
+                # attacktype1 => attacktype
+                groups = re.search("^.*?(?=[0-9])", colname)
+                if groups:
+                    prefix = groups.group(0)
+                else:
+                    prefix = colname
+                # Track the prefixes and their pairings with the column names
+                if prefix not in orprefixes:
+                    orprefixes.append(prefix)
+                if prefix in dict:
+                    dict[prefix].append(colname)
+                else:
+                    dict[prefix] = [colname]
+
+        print 'orprefixes: ' + str(orprefixes)
+        print 'dict: ' + str(dict)
+        # orprefixes = [a, b]
+        # dict = {a: [a1, a2, a3, a1, a2, a3], b: [b1, b2, b3]}
+
+        ordict = {}
+        for prefix in orprefixes:
+            ordict[prefix] = []
+
+        # ordict = {'a': [], 'b': []}
+        print 'Empty ordict: ' + str(ordict)
+
+        for prefix, colnamelist in dict.items():
+            # This is the most questionable line.
+            if len(colnamelist) > 1 or len(r.getlist(*colnamelist)) > 1:
+                or_objects = []
+                for colname in colnamelist:
                     # Remove it from the original (all AND) filter set
                     for key in applicable_filters.keys():
                         # Need the startswith b/c keys are country__exact, etc.
-                        if key.startswith(k):
+                        if key.startswith(colname):
                             del(applicable_filters[key])
                     # Create a Q object and put it in the OR list for each val
-                    for v in r.getlist(k):
-                        or_objects.append(Q(**{k: str(v)}))
+                    for v in r.getlist(colname):
+                        or_objects.append(Q(**{colname: str(v)}))
+                ordict[prefix] = copy.copy(or_objects)
 
-        if or_objects:
-            return self.get_object_list(request).filter(reduce(operator.or_,
-                                                           or_objects),
+        print 'Filled ordict: ' + str(ordict)
+        filter = []
+        for list in ordict.values():
+            if len(list) > 1:
+                filter.append(reduce(operator.or_, list))
+            else:
+                print 'ELSE: ' + str(list)
+        print len(filter)
+
+        if filter:
+            print "OR FILTER"
+            return self.get_object_list(request).filter(*filter,
                                                         **applicable_filters)
         else:
             # Just return what it normally would (ANDs on all filters).
+            print "NORMAL"
             return self.get_object_list(request).filter(**applicable_filters)
 
     def dehydrate(self, bundle):
