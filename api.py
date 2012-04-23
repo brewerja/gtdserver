@@ -326,7 +326,6 @@ class GtdResource(ModelResource):
     def apply_filters(self, request, applicable_filters):
         """Any filters used twice will be combined with OR."""
         r = request.GET
-        print r
 
         # Example: a1=x, a2=x, a3=x, a1=y, a2=y, a3=y, b1=z, b2=z, b3=z
         # We want (a1=x or a2=x or a3=x or a1=y or a2=y or a3=y) and 
@@ -336,11 +335,9 @@ class GtdResource(ModelResource):
 
         orprefixes = []
         dict = {}
-        print r.keys()
         for colname in r.keys():
             # Make sure it's a column name, not something like 'format'
             if colname in column_names:
-                print colname, r.getlist(colname)
                 # Match everything until the numbers...
                 # attacktype1 => attacktype
                 groups = re.search("^.*?(?=[0-9])", colname)
@@ -356,8 +353,6 @@ class GtdResource(ModelResource):
                 else:
                     dict[prefix] = [colname]
 
-        print 'orprefixes: ' + str(orprefixes)
-        print 'dict: ' + str(dict)
         # orprefixes = [a, b]
         # dict = {a: [a1, a2, a3, a1, a2, a3], b: [b1, b2, b3]}
 
@@ -366,7 +361,6 @@ class GtdResource(ModelResource):
             ordict[prefix] = []
 
         # ordict = {'a': [], 'b': []}
-        print 'Empty ordict: ' + str(ordict)
 
         for prefix, colnamelist in dict.items():
             # This is the most questionable line.
@@ -383,22 +377,16 @@ class GtdResource(ModelResource):
                         or_objects.append(Q(**{colname: str(v)}))
                 ordict[prefix] = copy.copy(or_objects)
 
-        print 'Filled ordict: ' + str(ordict)
         filter = []
         for list in ordict.values():
             if len(list) > 1:
                 filter.append(reduce(operator.or_, list))
-            else:
-                print 'ELSE: ' + str(list)
-        print len(filter)
 
         if filter:
-            print "OR FILTER"
             return self.get_object_list(request).filter(*filter,
                                                         **applicable_filters)
         else:
             # Just return what it normally would (ANDs on all filters).
-            print "NORMAL"
             return self.get_object_list(request).filter(**applicable_filters)
 
     def dehydrate(self, bundle):
