@@ -10,6 +10,21 @@ import re
 
 column_names = Gtd._meta.get_all_field_names()
 
+class YearResource(ModelResource):
+    def dehydrate(self, bundle):
+        b = bundle
+        x = self.get_resource_uri(b).split('years/')
+        b.data['filter'] = x[0] + 'attacks/?year=' + str(b.obj.name)
+        b.data['id'] = b.obj.name
+        b.data['name'] = str(b.obj.name)
+        return bundle
+
+    class Meta:
+        filtering = {'name': ALL}
+        ordering = ['name', 'num_attacks']
+        allowed_methods = ['get']
+        queryset = Years.objects.all()
+        resource_name = 'years'
 
 class DbsourceResource(ModelResource):
     def dehydrate(self, bundle):

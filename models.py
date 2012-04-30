@@ -43,6 +43,13 @@ from django.contrib.gis.geos import *
 #    class Meta:
 #        db_table = u'geography_columns'
 
+class Years(models.Model):
+    name = models.IntegerField(primary_key=True)
+    num_attacks = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        db_table = u'years'
+
 class Dbsources(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=40, blank=True)
