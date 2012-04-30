@@ -200,6 +200,9 @@ class HostageOutcomeResource(ModelResource):
 
 attack_filtering_options = {
     'id': ALL,
+    'year': ALL,
+    'month': ALL,
+    'day': ALL,
     'date': ALL,
     'extended': ALL,
     'resolution': ALL,

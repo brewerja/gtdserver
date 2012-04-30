@@ -163,6 +163,9 @@ class ClaimModes(models.Model):
 
 class Gtd(models.Model):
     id = models.BigIntegerField(primary_key=True)
+    year = models.IntegerField(null=True, blank=True)
+    month = models.IntegerField(null=True, blank=True)
+    day = models.IntegerField(null=True, blank=True)
     date = models.DateField(null=True, blank=True)
     approxdate = models.CharField(max_length=100, blank=True)
     extended = models.NullBooleanField(null=True, blank=True)
